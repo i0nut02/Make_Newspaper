@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
     }
 
     while (--argc >= 2){
-        if (check_number(argv[argc]) == 0){
+        if (check_number_grater_zero(argv[argc]) == 0){
             printf("%s isn't a number, please check \"./makeJournal --help\"", argv[argc]);
             return 0;
         }

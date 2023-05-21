@@ -20,7 +20,7 @@ int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, in
         char word[3 * max_lenght_str];
         memset(word, '\0', 3 * max_lenght_str * sizeof(char));
 
-        while ((ch != ' ') & (ch != '\n') & (ch != EOF)){
+        while ((ch != ' ') & (ch != '\n') & (ch != EOF) & (ch != '\t')){
             word[word_len] = ch;
             word_len++;
             ch = getc(file_pointer);
@@ -45,11 +45,10 @@ int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, in
             check_list_allocation(*list);
 
             // alloc the space to contain the word
-            *(*list +indx_word) = (char *)calloc(word_len, sizeof(char));
+            *(*list +indx_word) = (char *)calloc(word_len +1, sizeof(char));
             check_string_allocation(*(*list +indx_word));
 
-            memset(*(*list + indx_word), '\0', sizeof(char) * word_len);
-            strncpy(*(*list + indx_word), word, word_len+1);
+            strncpy(*(*list + indx_word), word, word_len);
             indx_word++;
         }
 

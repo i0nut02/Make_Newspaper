@@ -8,7 +8,7 @@
 extern int errno;
 
 
-struct journal_manager{
+struct {
     int num_columns;
     int column_length;
     int num_rows;
@@ -125,8 +125,8 @@ void update_row_col_index(struct journal_manager *journal_man, int fd[2]){
         journal_man->row_index = 0;
         journal_man->col_index = (journal_man->col_index + 1) % journal_man->num_columns;
         if (journal_man->col_index == 0){
-            int size = 3;
-            char next_p[3] = "\n";
+            int size = 7;
+            char next_p[7] = "\n %%% \n";
             if (write(fd[1], &size, sizeof(int)) == -1){
                 printf("There was a problem writing the data in the pipe\n");
                 exit(1);

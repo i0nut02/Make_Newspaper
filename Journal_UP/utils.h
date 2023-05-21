@@ -50,12 +50,12 @@ void check_string_allocation(char *str);
 
 
 /**
- * @brief check if str is composed of integer numbers
+ * @brief check if the string is composed of integer numbers and if it is, check  if it's greater than 0
  * 
  * @param str 
  * @return 1 if str is composed of integer numbers otherwise 0
  */
-int check_number(char *str);
+int check_number_grater_zero(char *str);
 
 
 /**

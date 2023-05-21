@@ -29,11 +29,11 @@ int main(int argc, char *argv[]){
 
     if (strcmp(argv[1], "--help") == 0){
         printf("expected input in order: \
-                \n-text_file.txt : file with txt extention \
-                \n-number_of_columns : int \
-                \n-number_of_lines_of_one_page : int \
-                \n-number_of_characters_per_column_line : int \
-                \n-distance_beetween_columns : int \
+                \n\t-text_file.txt : file with txt extention \
+                \n\t-number_of_columns : int \
+                \n\t-number_of_lines_of_one_page : int \
+                \n\t-number_of_characters_per_column_line : int \
+                \n\t-distance_beetween_columns : int \
                 \nexample: \"./makeJournal example.txt 3 20 25 5\"\n");
         return 0;
     }
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
     }
 
     while (--argc >= 2){
-        if (check_number(argv[argc]) == 0){
+        if (check_number_grater_zero(argv[argc]) == 0){
             printf("%s isn't a number, please check \"./makeJournal --help\"", argv[argc]);
             return 0;
         }

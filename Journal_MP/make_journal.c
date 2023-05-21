@@ -12,7 +12,7 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
     int len_words;
     int start_index;
     int finish_index;
-    int enable_len = journal_man->column_length;
+    int enable_len = journal_man->num_columns * journal_man->column_length;
     char **list;
     int size;
     int n_paragraph;
@@ -49,8 +49,8 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
 
         // puts an empty row of a column between the i-th and i-1-th paragraph
         if (n_paragraph > 0){
-            char empty_line[enable_len +1];
-            memset_string_to_char(empty_line, ' ', enable_len +1);
+            char empty_line[journal_man->column_length +1];
+            memset_string_to_char(empty_line, ' ', journal_man->column_length +1);
 
             insert_column_space(journal_man);
             insert_row(journal_man, empty_line);
@@ -61,9 +61,9 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
             len_words = 0;
             // check if the real len of words from start_index to finish_index + (1 white space per word) -1
             // is lower than the number of characters in a row of a column of our journal
-            while ( (finish_index < size) & \
-                    (len_words + real_len(list[finish_index]) + finish_index - start_index <= journal_man->column_length) ) {
-
+            while ((finish_index < size) & \
+                  ((len_words + real_len(list[finish_index]) + finish_index - start_index) <= journal_man->column_length) ) {
+        
                 len_words += real_len(list[finish_index]);
                 finish_index += 1;
         
@@ -88,6 +88,7 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
 
             // make a string whit length equal to row of a column length +1, and copy the first word;
             char row_content[enable_len +1];
+            memset(row_content, '\0', enable_len +1);
             strcpy(row_content, list[start_index]);
 
             for (int i = start_index + 1; i < finish_index; i++){
@@ -145,7 +146,7 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
     } 
 
     for (int i = start; i < finish; i++){
-        len = strlen_while(journal_man->journal_page[i], '\0');
+        len = strlen(journal_man->journal_page[i]) +1;
         if (len == 0){
             break;
         }
@@ -202,7 +203,8 @@ void read_paragraphs_file(char file_name[], int max_word_len, int fd[2]){
             }
 
             for(int i= 0; i < size; i++){
-                int word_len = strlen(list[i]);
+                int word_len = strlen(list[i]) +1;
+                
                 if (write(fd[1], &word_len, sizeof(int)) == -1){
                     printf("There was a problem writing the data in the pipe\n");
                     exit(EXIT_FAILURE);
@@ -215,9 +217,9 @@ void read_paragraphs_file(char file_name[], int max_word_len, int fd[2]){
                 //printf("read process, i send : %s\n", list[i]);
                 free(list[i]);
             }
-            free(list);
             paragraph += 1;
         }
+        free(list);
     } while (end_file != -1);
     size = -1;
     if (write(fd[1], &size, sizeof(int)) == -1){

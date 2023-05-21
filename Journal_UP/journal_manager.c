@@ -73,7 +73,7 @@ void write_row(struct journal_manager *journal_man, int row_index){
 
 void next_page(FILE *file_pointer){
     int err;
-    err = fputs("\n\n", file_pointer);
+    err = fputs("\n%%% \n\n", file_pointer);
     if (err == EOF){
         printf("Trere was an error writing the Journal file");
         exit(EXIT_FAILURE);

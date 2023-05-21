@@ -22,6 +22,10 @@ int real_len(char *s){
         else if ('\xc0' <= ch & ch <= '\xcf'){
             index += 2;
         }
+        // chars composed of 4 bytes, like emojis
+        else if ('\xf0' <= ch & ch <= '\xff'){
+            index += 4;
+        }
         else {
             index += 1;
         } 
@@ -39,7 +43,7 @@ void memset_string_to_char(char *dest, char ch, int size){
 
 void free_list(char **list, int size){
     for (int i = 0; i < size; i++){
-        memset_string_to_char(*(list + i), '\0', strlen(*(list + i)));
+        memset(*(list + i), '\0', strlen(*(list + i)) * sizeof(char));
         free(*(list + i));
     }
     free(list);
@@ -62,7 +66,7 @@ void check_string_allocation(char *str){
 }
 
 
-int check_number(char *str){
+int check_number_grater_zero(char *str){
     int i = 0;
     while (str[i] != '\0'){
         if (str[i] >= '0' & str[i] <= '9'){
@@ -72,7 +76,11 @@ int check_number(char *str){
             return 0;
         }
     }
-    return 1;
+    if (atoi(str) > 0){
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 
