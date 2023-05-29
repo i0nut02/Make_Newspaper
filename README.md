@@ -1,1 +1,1 @@
-# Make_Journal
+# Make_Newspaper
