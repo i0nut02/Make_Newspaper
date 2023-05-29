@@ -3,27 +3,27 @@
 #include <errno.h>
 #include <sys/wait.h>
 
-#include "journal_manager.h"
-#include "make_journal.h"
+#include "newspaper_manager.h"
+#include "make_newspaper.h"
 
-int JOURNAL_LEN = 7;
-char JOURNAL_WORD[9] = "_JOURNAL";
+int NEWSPAPER_LEN = 9;
+char NEWSPAPER_WORD[11] = "_NEWSPAPER";
 int DOTTXT_LEN = 4;
 char DOTTXT[5] = ".txt";
 char DOT = '.';
 
 int errno;
 
-void make_journal_name(char *file_name, char *journal_name){
-    strcpy_while(journal_name, file_name, DOT);
-    strcat(journal_name, JOURNAL_WORD);
-    strcat(journal_name, DOTTXT);
+void make_newspaper_name(char *file_name, char *newspaper_name){
+    strcpy_while(newspaper_name, file_name, DOT);
+    strcat(newspaper_name, NEWSPAPER_WORD);
+    strcat(newspaper_name, DOTTXT);
 }
 
 
 int main(int argc, char *argv[]){
     if (argc == 1){
-        printf("\"./makeJournal\" isn't enough to run this program, please check \"./makeJournal --help\"");
+        printf("\"./makeNewspaper\" isn't enough to run this program, please check \"./makeNewspaper --help\"");
         return 0;
     }
 
@@ -34,24 +34,24 @@ int main(int argc, char *argv[]){
                 \n\t-number_of_lines_of_one_page : int \
                 \n\t-number_of_characters_per_column_line : int \
                 \n\t-distance_beetween_columns : int \
-                \nexample: \"./makeJournal example.txt 3 20 25 5\"\n");
+                \nexample: \"./makeNewspaper example.txt 3 20 25 5\"\n");
         return 0;
     }
 
     if (argc != 6){
-        printf("input doesn't fit the expected input, please check \"./makeJournal --help\"");
+        printf("input doesn't fit the expected input, please check \"./makeNewspaper --help\"");
         return 0;
     }
 
     while (--argc >= 2){
         if (check_number_grater_zero(argv[argc]) == 0){
-            printf("%s isn't a number, please check \"./makeJournal --help\"", argv[argc]);
+            printf("%s isn't a number, please check \"./makeNewspaper --help\"", argv[argc]);
             return 0;
         }
     }
 
     // fd_1 is used to transferring the paragraphs read from the input file to another process
-    // fd_2 is used to transferring the row of the journal to another process
+    // fd_2 is used to transferring the row of the newspaper to another process
     int fd_1[2], fd_2[2];
     int pid_1, pid_2, pid_3;
 
@@ -75,19 +75,19 @@ int main(int argc, char *argv[]){
 
     if (pid_2 == 0){
         // child process who read the paragraphs from pid_1 and write the 
-        // rows of journal page to pid_3
+        // rows of newspaper page to pid_3
         close_write_pipe(fd_1);
         close_read_pipe(fd_2);
 
-        struct journal_manager journal_man;
-        journal_man.num_columns = atoi(argv[2]);
-        journal_man.num_rows =  atoi(argv[3]);
-        journal_man.column_length = atoi(argv[4]);
-        journal_man.distance_btw_columns = atoi(argv[5]);
+        struct newspaper_manager newspaper_man;
+        newspaper_man.num_columns = atoi(argv[2]);
+        newspaper_man.num_rows =  atoi(argv[3]);
+        newspaper_man.column_length = atoi(argv[4]);
+        newspaper_man.distance_btw_columns = atoi(argv[5]);
 
-        initialize_journal(&journal_man);
+        initialize_newspaper(&newspaper_man);
 
-        alloc_paragraph(&journal_man, fd_1, fd_2);
+        alloc_paragraph(&newspaper_man, fd_1, fd_2);
         exit(EXIT_SUCCESS);
     }
 
@@ -95,16 +95,16 @@ int main(int argc, char *argv[]){
     check_fork(pid_3);
 
     if (pid_3 == 0){
-        // child process who read the rows of Journal page from pid_2
+        // child process who read the rows of newspaper page from pid_2
         close_write_pipe(fd_2);
         close_write_pipe(fd_1);
         close_read_pipe(fd_1);
 
-        char journal_name[strlen(argv[1]) + JOURNAL_LEN +1];
-        memset_string_to_char(journal_name, '\0', strlen(argv[1]) + JOURNAL_LEN +1);
-        make_journal_name(argv[1], journal_name);
+        char newspaper_name[strlen(argv[1]) + NEWSPAPER_LEN +1];
+        memset_string_to_char(newspaper_name, '\0', strlen(argv[1]) + NEWSPAPER_LEN +1);
+        make_newspaper_name(argv[1], newspaper_name);
 
-        FILE *fp = fopen (journal_name, "w");
+        FILE *fp = fopen (newspaper_name, "w");
         int errnum;
         if (fp == NULL ){
             errnum = errno;
@@ -176,6 +176,6 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
     }
-    printf("You can find your Journal file in the directory of your input file");
+    printf("You can find your newspaper file in the directory of your input file\n");
     return 0;
 }

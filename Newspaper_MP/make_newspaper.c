@@ -3,16 +3,16 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "journal_manager.h"
+#include "newspaper_manager.h"
 #include "read_file.h"
 #include "utils.h"
 
 
-void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[2]){
+void alloc_paragraph(struct newspaper_manager *newspaper_man, int fd_1[2], int fd_2[2]){
     int len_words;
     int start_index;
     int finish_index;
-    int enable_len = journal_man->num_columns * journal_man->column_length;
+    int enable_len = newspaper_man->num_columns * newspaper_man->column_length;
     char **list;
     int size;
     int n_paragraph;
@@ -49,20 +49,20 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
 
         // puts an empty row of a column between the i-th and i-1-th paragraph
         if (n_paragraph > 0){
-            char empty_line[journal_man->column_length +1];
-            memset_string_to_char(empty_line, ' ', journal_man->column_length +1);
+            char empty_line[newspaper_man->column_length +1];
+            memset_string_to_char(empty_line, ' ', newspaper_man->column_length +1);
 
-            insert_column_space(journal_man);
-            insert_row(journal_man, empty_line);
-            update_row_col_index(journal_man, fd_2);
+            insert_column_space(newspaper_man);
+            insert_row(newspaper_man, empty_line);
+            update_row_col_index(newspaper_man, fd_2);
         }
         
         while (start_index < size){
             len_words = 0;
             // check if the real len of words from start_index to finish_index + (1 white space per word) -1
-            // is lower than the number of characters in a row of a column of our journal
+            // is lower than the number of characters in a row of a column of our newspaper
             while ((finish_index < size) & \
-                  ((len_words + real_len(list[finish_index]) + finish_index - start_index) <= journal_man->column_length) ) {
+                  ((len_words + real_len(list[finish_index]) + finish_index - start_index) <= newspaper_man->column_length) ) {
         
                 len_words += real_len(list[finish_index]);
                 finish_index += 1;
@@ -76,14 +76,14 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
             int remaining_spaces = 0;
 
             // number of white spaces to insert in the row of a column
-            int num_spaces = journal_man->column_length - len_words;
+            int num_spaces = newspaper_man->column_length - len_words;
 
             // is writing the last words in a paragraph so num_
             if (finish_index == size){
                 // take one white space per word -1
                 num_spaces = finish_index - start_index -1;
                 // add the last remaing spece to fulfill the entire row of a column after the words
-                remaining_spaces = journal_man->column_length - len_words - num_spaces;
+                remaining_spaces = newspaper_man->column_length - len_words - num_spaces;
             }
 
             // make a string whit length equal to row of a column length +1, and copy the first word;
@@ -111,9 +111,9 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
             
             strcat(row_content, spaces_words);
             
-            insert_column_space(journal_man);
-            insert_row(journal_man, row_content);
-            update_row_col_index(journal_man, fd_2);
+            insert_column_space(newspaper_man);
+            insert_row(newspaper_man, row_content);
+            update_row_col_index(newspaper_man, fd_2);
             start_index = finish_index;
 
             memset_string_to_char(row_content, '\0', strlen(row_content));
@@ -129,24 +129,24 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
 
     int len;
     int start = 0;
-    int finish = journal_man->row_index;
+    int finish = newspaper_man->row_index;
 
 
-    if (journal_man->col_index == journal_man->num_columns -1){
+    if (newspaper_man->col_index == newspaper_man->num_columns -1){
         // writes only the rows which have the row of the last column 
         // empty, if num_columns = one then will not print anything, otherwise 
         // will enter in the else if
-        start = journal_man->row_index;
+        start = newspaper_man->row_index;
 
     }
-    if (journal_man->col_index != 0){
+    if (newspaper_man->col_index != 0){
         // write until the last row because all the rows of the col-index -1 column
         // aren't empty 
-        finish = journal_man->num_rows;
+        finish = newspaper_man->num_rows;
     } 
 
     for (int i = start; i < finish; i++){
-        len = strlen(journal_man->journal_page[i]) +1;
+        len = strlen(newspaper_man->newspaper_page[i]) +1;
         if (len == 0){
             break;
         }
@@ -155,7 +155,7 @@ void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[
             printf("There was a problem writing the data in the pipe\n");
             exit(1);
         }
-        if (write(fd_2[1], journal_man->journal_page[i], len * sizeof(char)) == -1){
+        if (write(fd_2[1], newspaper_man->newspaper_page[i], len * sizeof(char)) == -1){
             printf("There was a problem writing the data in the pipe\n");
             exit(1);
         }

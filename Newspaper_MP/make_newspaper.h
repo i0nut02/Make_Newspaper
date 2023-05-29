@@ -1,26 +1,26 @@
-#ifndef MAKE_JOURNAL_H
-#define MAKE_JOURNAL_H
+#ifndef MAKE_NEWSPAPER_H
+#define MAKE_NEWSPAPER_H
 
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
 
-#include "journal_manager.h"
+#include "newspaper_manager.h"
 #include "read_file.h"
 #include "utils.h"
 
 
 /**
- * @brief alloc and manage the words from fd_1 to Journal page of journal_man, and send
- *          in fd_2 the rows of Journal page
+ * @brief alloc and manage the words from fd_1 to newspaper page of newspaper_man, and send
+ *          in fd_2 the rows of newspaper page
  *          
  * 
- * @param journal_man 
+ * @param newspaper_man 
  * @param fd_1 file descriptor only reading
  * @param fd_2 file ddescriptor only writing
  */
-void alloc_paragraph(struct journal_manager *journal_man, int fd_1[2], int fd_2[2]);
+void alloc_paragraph(struct newspaper_manager *newspaper_man, int fd_1[2], int fd_2[2]);
 
 
 /**
