@@ -239,7 +239,7 @@ void read_paragraphs_file(char file_name[], int max_word_len, int fd[2]){
 
     if (close_err == EOF){
         errnum = errno;
-        printf("Closing the text file: %s\nerror: %s\n", "ou.txt", strerror(errnum));
+        printf("Closing the text file: %s\nerror: %s\n", file_name, strerror(errnum));
         exit(EXIT_FAILURE);
     }
 }

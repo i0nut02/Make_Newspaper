@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
 
-        write_row(fp, fd_2);
+        write_rows(fp, fd_2);
 
         int close_err = fclose(fp);
 

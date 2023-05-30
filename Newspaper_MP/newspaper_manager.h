@@ -21,52 +21,50 @@ struct newspaper_manager{
 };
 
 /**
- * @brief create and memset a list of string which rapresent a newspaper page
- *        
+ * @brief crea e azzera una lista di stringhe che rappresenta una pagina di giornale, e 
+ *        inzializza gli indici di scrittura riga e colonna su 0, 0 
  * 
- * @param newspaper_man the struct which will contain the pointer to the newspaper file
+ * @param newspaper_man la struttura che conterrà la pagina di giornale e le varie informazioni
  */
 void initialize_newspaper(struct newspaper_manager *newspaper_man);
 
 
 /**
- * @brief writes in fp the rows which are in the file descriptor fd
+ * @brief scrive su fp le righe che riceve tramite fd
  * 
- * @param fp file pointer to newspaper file
- * @param fd file descriptor read only
+ * @param fp file pointer su file di output
+ * @param fd file descriptor solo lettura
  */
-void write_row(FILE *fp, int fd[2]);
+void write_rows(FILE *fp, int fd[2]);
 
 
 /**
- * @brief inserts on the newspaper_page the src string and if we are 
- *          adding the last column text on the i-th row, write the i-th
- *          row on the newspaper file
- *          
+ * @brief aggiunge src alla pagina di giornale nelli indice di riga e colonna
+ *          che trova in newspaper_man
  * 
- * @param newspaper_man 
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale
  * @param src a string which represents a row of a column
  */
 void insert_row(struct newspaper_manager *newspaper_man, char *src);
 
 
 /**
- * @brief insert the space between the i-th column and the 
- *          i-1-th column if the j-th row, i and j are the column_index
- *          and row_index of the newspaper_man
+ * @brief inserisce lo spazio tra colonne tra la j-esima riga della i-esima colonna
+ *          e la j-esima riga della (i-1)-esima colonna
  * 
- * @param newspaper_man 
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale
  */
 void insert_column_space(struct newspaper_manager *newspaper_man);
 
 
 /**
- * @brief if column_index = num_columns than write in the file descriptor
- *          row_index-th row of newspaper page, than increment row_index and
- *          handle the different cases of indexes
+ * @brief aggiorna gli indici delle righe e colonne dove scrivere, e se
+ *          si accorge che il vecchio indice di colonna è "uguale -1" al
+ *          numero di colonne allora, invia tutta la riga precedente (rispetto a quella aggiornata)
+ *          in fd
  *          
- * @param newspaper_man 
- * @param fd file descriptor write
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale
+ * @param fd file descriptor solo scrittura
  */
 void update_row_col_index(struct newspaper_manager *newspaper_man, int fd[2]);
 
