@@ -193,7 +193,7 @@ void read_paragraphs_file(char file_name[], int max_word_len, int fd[2]){
         size = 0;
         end_file = get_paragraph_words(fp, &list, max_word_len, &size);
 
-        // se size è uguale a 0 allora abbiamo letto una riga vuota di parole
+        /* se size è uguale a 0 allora abbiamo letto una riga vuota di parole */
         if (size > 0){
             if (write(fd[1], &size, sizeof(int)) == -1){
                 printf("There was a problem writing the data in the pipe\n");

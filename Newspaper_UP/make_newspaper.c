@@ -13,10 +13,10 @@ void alloc_paragraph(struct newspaper_manager *newspaper_man, char ***src, int *
     int num_spaces;
     int start_index = 0;
     int finish_index = 0;
-    int enable_len = newspaper_man->num_columns * newspaper_man->column_length;
+    int enable_len = 4 * newspaper_man->column_length;
 
-    // make an empty row of column which represent the division between 
-    // the n-1-th paragraph to the n-th paragraph
+    /* inserisce una riga della colonna vuota all'interno del giornale che 
+            rappresenta la divisione tra paragrafi */
     if (n_paragraph > 0){
         char empty_line[newspaper_man->column_length +1];
         memset_string_to_char(empty_line, ' ', newspaper_man->column_length +1);
@@ -28,8 +28,8 @@ void alloc_paragraph(struct newspaper_manager *newspaper_man, char ***src, int *
     
     while (start_index < *size){
         len_words = 0;
-        // check if the real len of words from start_index to finish_index + (1 white space per word) -1
-        // is lower than the number of characters in a row of a column of our newspaper
+        /* determina il numero massimo di parole che possiamo inserire in una riga della colonna
+            considerando la lunghezza in caratteri reali e lasciando uno spazio tra l'i-esima e (i-1)-esima parola */
         while ( (finish_index < *size) & \
                 (len_words + real_len(*(*src + finish_index)) + finish_index - start_index <= newspaper_man->column_length) ) {
 
@@ -40,40 +40,42 @@ void alloc_paragraph(struct newspaper_manager *newspaper_man, char ***src, int *
                 break;
             }
         }
-        // space to fulfill of white spaces after the last word
+        /* spazio necessario per riempiere una riga della colonna colonna avendo inserito le parole e spazi*/
         remaining_spaces = 0;
-        // number of white spaces to insert in the row of a column
+
+        /* numero di spazi da distribuire tra le parole*/
         num_spaces = newspaper_man->column_length - len_words;
 
-        // is writing the last words in a paragraph so num_
+        /* se stiamo scrivendo l'ultima parola del paragrafo allora lo spazio tra ogni paraola
+            dovrà essere uguale a 1*/
         if (finish_index == *size){
-            // take one white space per word -1
             num_spaces = finish_index - start_index -1;
-            // add the last remaing spece to fulfill the entire row of a column after the words
+
+            /* determina gli spazi vuoti che ci devono essere tra l'ultima parola e 
+                la fine della riga della colonna */
             remaining_spaces = newspaper_man->column_length - len_words - num_spaces;
         }
 
-        // make a string whit length equal to row of a column length +1, and copy the first word;
         char row_content[enable_len +1];
         memset(row_content, '\0', (enable_len+1) * sizeof(char));
-
         strcpy(row_content, *(*src + start_index));
 
+        /* inserisce lo spazio che ci dovrebbe essere tra l'i-esima parola e 
+            l'(i-1)-esima parola e inserisce l'iesima parola, questo per tutte 
+            le parole tranne per la prima */
         for (int i = start_index + 1; i < finish_index; i++){
 
-            // make a string which represent the space between the i-1-th and the i-th word
             char spaces_words[num_spaces / (finish_index - i) +1];
             memset_string_to_char(spaces_words, ' ', num_spaces / (finish_index - i) +1);
 
             strcat(row_content, spaces_words);
             num_spaces -= num_spaces / (finish_index - i);
 
-            // add the i-th word in the string which represent the row of a column string
             strcat(row_content, *(*src + i));
         }
 
-        // add white spaces to compleate an entire row of a column
-        // it add something if and only if finish = *size or *size = 1 (insert only one word)
+        /* aggiunge gli spazi vuori che manvano al fine di riempire la riga della colonna
+            succede quanto abbiamo inserito l'ultima parola o quanto inseriamo una sola parola*/ 
         char spaces_words[num_spaces + remaining_spaces + 1];
         memset_string_to_char(spaces_words, ' ', num_spaces + remaining_spaces + 1);
         strcat(row_content, spaces_words);
@@ -90,10 +92,10 @@ void alloc_paragraph(struct newspaper_manager *newspaper_man, char ***src, int *
 
 
 void make_newspaper(struct newspaper_manager *newspaper_man, FILE *read_file){
-    // represent the last char found in read_file
+    /* rapresenta se l'ultimo carattere letto è EOF o no */
     int end_file;
 
-    // number of words founded during get_paragraph_words
+    /* numero di parole trovate in un paragrafo*/
     int size;
     int paragraph = 0;
     char **list;
@@ -101,7 +103,7 @@ void make_newspaper(struct newspaper_manager *newspaper_man, FILE *read_file){
         size = 0;
         end_file = get_paragraph_words(read_file, &list, newspaper_man->column_length, &size);
 
-        // if size = 0 then we found a \n or EOF like first char (after deleting the white speces)
+        /* se size è uguale a 0 allora abbiamo letto una riga vuota di parole */
         if (size > 0){
             alloc_paragraph(newspaper_man, &list, &size, paragraph);
             paragraph += 1;
@@ -112,16 +114,20 @@ void make_newspaper(struct newspaper_manager *newspaper_man, FILE *read_file){
     int start = 0;
     int finish = newspaper_man->row_index;
 
+    /* se la colonna in cui dovremmo scrivere è uguale all'ultima disponibile
+        allora dovremmo iniziare a scrivere dall'indice della riga della colonna 
+        in cui dovevamo scrivere in giù
+    */
     if (newspaper_man->col_index == newspaper_man->num_columns -1){
-        // writes only the rows which have the row of the last column 
-        // empty, if num_columns = one then will not print anything, otherwise 
-        // will enter in the else if
         start = newspaper_man->row_index;
 
     }
+
+    /* se l'indice della colonna è diversa da zero allora vuol dire che abbiamo 
+        sicuramente scritto la colonna con indice 0 e quindi dovremmo scrivere fino
+        alla fine della riga
+    */
     if (newspaper_man->col_index != 0){
-        // write until the last row because all the rows of the col-index -1 column
-        // aren't empty 
         finish = newspaper_man->num_rows;
     } 
 

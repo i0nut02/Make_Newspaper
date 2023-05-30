@@ -12,18 +12,19 @@ int real_len(char *s){
         len += 1;
         char ch = s[index];
 
-        // chars composed of 3 bytes
-        if ('\xe0' <= ch & ch <= '\xef'){
-            index += 3;
-        }
-        // chars composed of 2 bytes
-        else if ('\xc0' <= ch & ch <= '\xcf'){
+
+        if ('\xc0' <= ch & ch <= '\xcf'){
             index += 2;
         }
-        // chars composed of 4 bytes, like emojis
+
+        else if ('\xe0' <= ch & ch <= '\xef'){
+            index += 3;
+        }
+
         else if ('\xf0' <= ch & ch <= '\xff'){
             index += 4;
         }
+
         else {
             index += 1;
         } 
@@ -34,13 +35,12 @@ int real_len(char *s){
 
 void memset_string_to_char(char *dest, char ch, int size){
     memset(dest, ch, sizeof(char) * size);
-    // add NULL terminator
+    /* aggiungiamo il null terminator */
     dest[size-1] = '\0';
 }
 
 
 void free_list(char **list, int size){
-
     for (int i = 0; i < size; i++){
         memset(*(list + i), '\0', strlen(*(list + i)) * sizeof(char));
         free(*(list + i));
@@ -51,7 +51,7 @@ void free_list(char **list, int size){
 
 void check_list_allocation(char **list){
     if (list == NULL){
-        printf("There was a problem with the allocation of a list in the heap\n");
+        printf("There was an error with the allocation of a list in the heap\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -59,7 +59,7 @@ void check_list_allocation(char **list){
 
 void check_string_allocation(char *str){
     if (str == NULL){
-        printf("There was a problem with the allocation of a string in the heap\n");
+        printf("There was an error with the allocation of a string in the heap\n");
         exit(EXIT_FAILURE);
     }
 }

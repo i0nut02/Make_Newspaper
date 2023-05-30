@@ -63,7 +63,6 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    // make newspaper name 
     char newspaper_name[strlen(argv[1]) + NEWSPAPER_LEN +1];
     memset_string_to_char(newspaper_name, '\0', strlen(argv[1]) + NEWSPAPER_LEN +1);
     make_newspaper_name(argv[1], newspaper_name);
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]){
 
     make_newspaper(&newspaper_man, fp);
     
-    // closing the read file (passed in input)
+    /* chiude il file di input */
     int close_err = fclose(fp);
 
     if (close_err == EOF){
@@ -82,6 +81,7 @@ int main(int argc, char *argv[]){
     }
 
     close_newspaper(&newspaper_man);
+    
     printf("You can find your newspaper file in the directory of your input file\n");
     memset_string_to_char(newspaper_name, '\0', strlen(argv[1]) + NEWSPAPER_LEN +1);
     return 0;

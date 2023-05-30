@@ -28,7 +28,7 @@ void memset_string_to_char(char *dest, char ch, int size);
  * @brief libera e memsetta a '\0' le stringhe della lista, e la lista stessa
  * 
  * @param list lista di stringhe
- * @param size dimensione della lista
+ * @param size lunghezza della lista
  */
 void free_list(char **list, int size);
 

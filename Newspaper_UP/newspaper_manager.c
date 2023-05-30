@@ -20,9 +20,9 @@ struct newspaper_manager{
 };
 
 
-void initialize_newspaper(char *name, struct newspaper_manager *newspaper_man){
-    // x make something if the file already exist
-    newspaper_man->newspaper_pointer = fopen (name, "w");
+void initialize_newspaper(char *file_name, struct newspaper_manager *newspaper_man){
+
+    newspaper_man->newspaper_pointer = fopen (file_name, "w");
 
     int errnum;
     if (newspaper_man->newspaper_pointer == NULL ){
@@ -34,13 +34,8 @@ void initialize_newspaper(char *name, struct newspaper_manager *newspaper_man){
     newspaper_man->col_index = 0;
     newspaper_man->row_index = 0;
 
-    // every row of the newspaper have in the worst case:
-    //  - num_columns - 1  * newspaper_man->distance_btw_columns empty spaces 
-    //  - there can be chars that need 3 bytes to be represented
     int size_newspaper_row  = ((newspaper_man->num_columns) * newspaper_man->column_length) * 3 +
                             (newspaper_man->num_columns-1) * newspaper_man->distance_btw_columns;
-
-    newspaper_man->newspaper_row_size = size_newspaper_row;
 
     newspaper_man->newspaper_page = (char **)calloc(newspaper_man->num_rows, sizeof(char*));
     check_list_allocation(newspaper_man->newspaper_page);
@@ -48,14 +43,13 @@ void initialize_newspaper(char *name, struct newspaper_manager *newspaper_man){
     for (int i = 0; i < newspaper_man->num_rows; i++){
         *(newspaper_man->newspaper_page +i) = (char*)calloc( size_newspaper_row , sizeof(char*)); 
         check_string_allocation(*(newspaper_man->newspaper_page +i));
-
-        memset(*(newspaper_man->newspaper_page +i), '\0', size_newspaper_row * sizeof(char));
     }
 }
 
 
 void write_row(struct newspaper_manager *newspaper_man, int row_index){
     int err;
+
     err = fputs(newspaper_man->newspaper_page[row_index], newspaper_man->newspaper_pointer);
     if (err == EOF){
         printf("Trere was an error writing the newspaper file");
@@ -67,13 +61,14 @@ void write_row(struct newspaper_manager *newspaper_man, int row_index){
         printf("Trere was an error writing the newspaper file");
         exit(EXIT_FAILURE);
     }
+
     memset(newspaper_man->newspaper_page[row_index], '\0', sizeof(char));
 }
 
 
 void next_page(FILE *file_pointer){
     int err;
-    err = fputs("\n%%% \n\n", file_pointer);
+    err = fputs("\n%%%\n\n", file_pointer);
     if (err == EOF){
         printf("Trere was an error writing the newspaper file");
         exit(EXIT_FAILURE);
@@ -105,13 +100,15 @@ void insert_column_space(struct newspaper_manager *newspaper_man){
 void update_row_col_index(struct newspaper_manager *newspaper_man){
 
     if (newspaper_man->col_index == newspaper_man->num_columns -1){
-        int row_indx =  newspaper_man->row_index;
-        write_row(newspaper_man, row_indx);
+        write_row(newspaper_man, newspaper_man->row_index);
     }
 
     if (newspaper_man->row_index == newspaper_man->num_rows -1){
         newspaper_man->row_index = 0;
         newspaper_man->col_index = (newspaper_man->col_index + 1) % newspaper_man->num_columns;
+
+        /* se ci troviamo nella prima riga della prima colonna allora stiamo strivendo sull'inizio
+            di una nuova pagina */
         if (newspaper_man->col_index == 0){
             next_page(newspaper_man->newspaper_pointer);
         }

@@ -20,70 +20,67 @@ struct newspaper_manager{
 };
 
 /**
- * @brief create or reset the file "name.txt", create and memset
- *          a list of string which rapresent a newspaper page
- *        
+ * @brief crea un file pointer su file_name e inizializza una lista di
+ *          stringhe che rappresenta la pagina di giornale, e vengono valvati nella struttura
  * 
- * @param name name of the file where the newspaper will be written on
- * @param newspaper_man the struct which will contain the pointer to the newspaper file
+ * @param file_name nome del file di output
+ * @param newspaper_man struttura che nonterrà il file pointer e la lista di stringhe (pagina di giornale)
  */
-void initialize_newspaper(char *name, struct newspaper_manager *newspaper_man);
+void initialize_newspaper(char *file_name, struct newspaper_manager *newspaper_man);
 
 
 /**
- * @brief writes the row_index-th row of newspaper_page on the newspaper file and
- *          memset to '/0' all the row
+ * @brief scrive la row_index-esima riga della pagina di giornale nel file 
+ *          che contiene il giornale
  * 
- * @param newspaper_man
- * @param row_index 
+ * @param newspaper_man strttura contenente le informazioni del giornale e il suo formato
+ * @param row_index indice della riga da scrivere
  */
 void write_row(struct newspaper_manager *newspaper_man, int row_index);
 
 
 /**
- * @brief writes "\n\n" on the input file
+ * @brief scrive la divisione tra due pagine all'interno del file
  * 
- * @param file_pointer 
+ * @param file_pointer file in modalità di scrittura
  */
 void next_page(FILE *file_pointer);
 
 
 /**
- * @brief inserts on the newspaper_page the src string and if we are 
- *          adding the last column text on the i-th row, write the i-th
- *          row on the newspaper file
+ * @brief aggiunge src alla pagina di giornale nelli indice di riga e colonna
+ *          che trova in newspaper_man
  *          
- * 
- * @param newspaper_man 
- * @param src a string which represents a row of a column
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale
+ * @param src una stringa che rappresenta una riga di una colonna
  */
 void insert_row(struct newspaper_manager *newspaper_man, char *src);
 
 
 /**
- * @brief insert the space between the i-th column and the 
- *          i-1-th column if the j-th row, i and j are the column_index
- *          and row_index of the newspaper_man
+ * @brief inserisce lo spazio tra colonne tra la j-esima riga della i-esima colonna
+ *          e la j-esima riga della (i-1)-esima colonna
  * 
- * @param newspaper_man 
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale
  */
 void insert_column_space(struct newspaper_manager *newspaper_man);
 
 
 /**
- * @brief if column_index = num_columns than call write_row() with
- *          the row_index of newspaper_man, than increment row_index and
- *          handle the different cases of indexes
+ * @brief aggiorna gli indici delle righe e colonne dove scrivere, e se
+ *          si accorge che il vecchio indice di colonna è "uguale -1" al
+ *          numero di colonne allora, chiama la funzione "write_row" con
+ *          indice non aggiornato della riga
  *          
- * @param newspaper_man 
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale 
  */
 void update_row_col_index(struct newspaper_manager *newspaper_man);
 
 
 /**
- * @brief close the newspaper file in newspaper_man
+ * @brief chiude il file pointer che rappresenta il giornale
  * 
- * @param newspaper_man 
+ * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale 
  */
 void close_newspaper(struct newspaper_manager *newspaper_man);
 

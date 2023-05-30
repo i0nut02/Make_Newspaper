@@ -37,7 +37,7 @@ int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, in
             exit(EXIT_FAILURE);
         }
 
-        /* controlla se è stata letta una seguenza di caratteri o diversi da [\n, ' ', EOF, \t] */
+        /* controlla se è stata letta una seguenza di caratteri non appartenente solo a [\n, ' ', EOF, \t] */
         if (word_len > 0){
 
             /* dobbiamo salvarci una parola in più allora aumentiamo la capacità della lista di parole */

@@ -10,41 +10,40 @@ int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, in
     int indx_word = 0;
     int word_len = 0;
     char ch = getc(file_pointer);
-    char word[3 * max_lenght_str];
+    char word[4 * max_lenght_str];
 
     *list = (char**)calloc(0, sizeof(char*));
     check_list_allocation(*list);
 
     while ((ch != '\n') & (ch != EOF)){
-        word_len = 0;
-        // in the worst case there will be a word composed of real word character which 
-        // ara composed of 3 chars in c notation
-        memset(word, '\0', 3 * max_lenght_str * sizeof(char));
+        word_len = 0; 
+
+        memset(word, '\0', 4 * max_lenght_str * sizeof(char));
         
         while ((ch != ' ') & (ch != '\n') & (ch != EOF) & (ch != '\t')){
             word[word_len] = ch;
             word_len++;
             ch = getc(file_pointer);
 
-            if (word_len > 3 * max_lenght_str){
+            if (word_len > 4 * max_lenght_str){
                 printf("This \"word\": %s is too long, because column lenght = %d", word, max_lenght_str);
                 exit(EXIT_FAILURE);
             }
         }
         
-        // check if we can put the word in a single row of a column
+        /* controlla se la parola riesce ad esser inserita in una riga di una colonna del giornale */
         if (real_len(word) > max_lenght_str){
             printf("This word: %s is too long, because column lenght = %d", word, max_lenght_str);
             exit(EXIT_FAILURE);
         }
 
-        // check if it is an empty word or a sequence of white spaces (only one based on our algorithm)
+        /* controlla se è stata letta una seguenza di caratteri non appartenente solo a [\n, ' ', EOF, \t] */
         if (word_len > 0){
-            // resizes the list which contains the words
+
+            /* dobbiamo salvarci una parola in più allora aumentiamo la capacità della lista di parole */
             *list = (char **)realloc(*list, (indx_word+1) * sizeof(char*));
             check_list_allocation(*list);
             
-            // alloc the space to contain the word
             *(*list +indx_word) = (char*)calloc(word_len +1, sizeof(char));
             check_string_allocation(*(*list +indx_word));
             
@@ -52,13 +51,13 @@ int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, in
             indx_word++;
         }
 
-        // finishes to read the words in a paragraph
+        /* smette di leggere le parole di un paragrafo */
         if (ch == '\n' | ch == EOF){
             break;
         }
         ch = getc(file_pointer);
     }
-    // save the number of words founded in input pointer
+    
     *size = indx_word;
 
     if (ch != EOF){

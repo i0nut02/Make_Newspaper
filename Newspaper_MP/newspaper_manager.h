@@ -43,7 +43,7 @@ void write_rows(FILE *fp, int fd[2]);
  *          che trova in newspaper_man
  * 
  * @param newspaper_man struttura che contiene il formato del giornala e la pagina di giornale
- * @param src a string which represents a row of a column
+ * @param src una stringa che rappresenta una riga di una colonna
  */
 void insert_row(struct newspaper_manager *newspaper_man, char *src);
 
