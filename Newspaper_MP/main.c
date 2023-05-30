@@ -50,8 +50,8 @@ int main(int argc, char *argv[]){
         }
     }
 
-    // fd_1 is used to transferring the paragraphs read from the input file to another process
-    // fd_2 is used to transferring the row of the newspaper to another process
+    /* fd_1 è usata per scrivere e leggere le parole dei paragrafi del file di input */
+    /* fd_2 è usata per scrivere e leggere le righe del giornale/ file di output */
     int fd_1[2], fd_2[2];
     int pid_1, pid_2, pid_3;
 
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
     check_fork(pid_1);
 
     if (pid_1 == 0){
-        // child process who read the input file and send the data to pid_2
+        /* figlio che si occupa di leggere e trasferire le parole del file di input */
         close_read_pipe(fd_1);
 
         read_paragraphs_file(argv[1], atoi(argv[4]), fd_1);
@@ -70,12 +70,14 @@ int main(int argc, char *argv[]){
 
     pipe(fd_2);
 
-    pid_2 = fork(); // check -1 val
+    pid_2 = fork(); 
     check_fork(pid_2);
 
     if (pid_2 == 0){
-        // child process who read the paragraphs from pid_1 and write the 
-        // rows of newspaper page to pid_3
+        /* figlio che si occupa di giustificare e inserire le parole e paragrafi nelle 
+            righe del giornale 
+        */
+
         close_write_pipe(fd_1);
         close_read_pipe(fd_2);
 
@@ -86,7 +88,6 @@ int main(int argc, char *argv[]){
         newspaper_man.distance_btw_columns = atoi(argv[5]);
 
         initialize_newspaper(&newspaper_man);
-
         alloc_paragraph(&newspaper_man, fd_1, fd_2);
         exit(EXIT_SUCCESS);
     }
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]){
     check_fork(pid_3);
 
     if (pid_3 == 0){
-        // child process who read the rows of newspaper page from pid_2
+        /* figlio che srive le righe del giornale nel file di output */
         close_write_pipe(fd_2);
         close_write_pipe(fd_1);
         close_read_pipe(fd_1);
@@ -108,11 +109,11 @@ int main(int argc, char *argv[]){
         int errnum;
         if (fp == NULL ){
             errnum = errno;
-            printf("Opening the text file: %s, is happening this error: %s\n", "ou.txt", strerror(errnum));
+            printf("Opening the text file: %s, is happening this error: %s\n", argv[2], strerror(errnum));
             exit(EXIT_FAILURE);
         }
 
-        write_row(fp, fd_2);
+        write_rows(fp, fd_2);
 
         int close_err = fclose(fp);
 
@@ -121,19 +122,22 @@ int main(int argc, char *argv[]){
             printf("Closing the text file: %s\nerror: %s\n", "ou.txt", strerror(errnum));
             exit(EXIT_FAILURE);
         }
+
         exit(EXIT_SUCCESS);
     }
 
-    // father process
+    /* processo padre */
     int status_1, status_2, status_3;
     int pid1_res, pid2_res, pid3_res;
     int err_sleep;
 
-    // check if child process have an exit failure, if all are finished with
-    // exit sucess than exit from the while
+
+    /* controlla se un processo figlio ha smesso di eseguire il programma con un 
+        codice di errore, se tutti finiscono con exit code uguale a 0 allora esce dal ciclo
+    */
     while(1){
         pid1_res = waitpid(pid_1, &status_1, WNOHANG);
-        // check if there is an error with waitpid 
+        /* controlla se waitpid ha generato un errore */ 
         if (pid1_res == -1 & errno != ECHILD){
             kill_processes(pid_1, pid_2, pid_3);
             printf("An error occurred using waitpid\n");
@@ -154,7 +158,7 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
 
-        // checks if a process finishes the execution with an error
+        /* controlla se un processo è finito con EXIT_FAILURE */
         if ((pid1_res == -1 & WEXITSTATUS(status_1) != 0) |
             (pid2_res == -1 & WEXITSTATUS(status_2) != 0) |
             (pid3_res == -1 & WEXITSTATUS(status_3) != 0) ){
@@ -163,16 +167,16 @@ int main(int argc, char *argv[]){
                 exit(EXIT_FAILURE);
             }
         
-        // there isn't any one process with exit status != 0 then 
-        // we can check only if all the processes are finished, which 
-        // means that all the child processes finish with success
+        /* tutti i processi sono finiti e nessuna ha avuto un EXIT_FAILURE */
         if (pid1_res == -1 & pid2_res == -1 & pid3_res == -1){
             break;
         }
-        // checks every 100 microseconds
+        
+        /* controlla ogni 100 microsecondi*/
         err_sleep = usleep(100);
         if (err_sleep == -1){
             printf("An error occurred with the usleep function\n");
+            kill_processes(pid_1, pid_2, pid_3);
             exit(EXIT_FAILURE);
         }
     }
