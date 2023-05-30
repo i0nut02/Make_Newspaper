@@ -5,8 +5,6 @@
 
 #include "utils.h"
 
-MAX_LEN_REAL_CHAR = 4
-
 extern int errno;
 
 
@@ -17,6 +15,7 @@ struct newspaper_manager{
     int distance_btw_columns;
     int row_index;
     int col_index;
+    int newspaper_row_size;
     char **newspaper_page;
     FILE *newspaper_pointer;
 };
@@ -27,8 +26,13 @@ void initialize_newspaper(struct newspaper_manager *newspaper_man){
     newspaper_man->col_index = 0;
     newspaper_man->row_index = 0;
 
-    int size_newspaper_row  = ((newspaper_man->num_columns) * newspaper_man->column_length) * MAX_LEN_REAL_CHAR +
+    // every row of the newspaper have in the worst case:
+    //  - num_columns - 1  * newspaper_man->distance_btw_columns empty spaces 
+    //  - there can be real chars that need 3 chars to be represented
+    int size_newspaper_row  = ((newspaper_man->num_columns) * newspaper_man->column_length) * 3 +
                             (newspaper_man->num_columns-1) * newspaper_man->distance_btw_columns;
+
+    newspaper_man->newspaper_row_size = size_newspaper_row;
 
     newspaper_man->newspaper_page = (char **)calloc(newspaper_man->num_rows, sizeof(char*));
     check_list_allocation(newspaper_man->newspaper_page);
@@ -42,14 +46,14 @@ void initialize_newspaper(struct newspaper_manager *newspaper_man){
 }
 
 
-void write_rows(FILE *fp, int fd[2]){
+void write_row(FILE *fp, int fd[2]){
     int size;
     int err;
     int first_row = 0;
 
     if (read(fd[0], &size, sizeof(int)) == -1){
-        printf("There was an error reading the data in the pipe\n");
-        exit(EXIT_FAILURE);
+        printf("There was a problem reading the data in the pipe\n");
+        exit(1);
     }
 
     while (size != -1){
@@ -57,7 +61,7 @@ void write_rows(FILE *fp, int fd[2]){
         if (first_row != 0){
             err = putc('\n', fp);
             if (err == EOF){
-                printf("Trere was an error writing the newspaper file\n");
+                printf("Trere was an error writing the newspaper file");
                 exit(EXIT_FAILURE);
             }
         }
@@ -67,13 +71,13 @@ void write_rows(FILE *fp, int fd[2]){
 
         err = fputs(row, fp);
         if (err == EOF){
-            printf("Trere was an error writing the newspaper file\n");
+            printf("Trere was an error writing the newspaper file");
             exit(EXIT_FAILURE);
         }
 
         if (read(fd[0], &size, sizeof(int)) == -1){
-            printf("There was an error reading the data in the pipe\n");
-            exit(EXIT_FAILURE);
+            printf("There was a problem reading the data in the pipe\n");
+            exit(1);
         }
         first_row += 1;
     }
@@ -105,15 +109,14 @@ void update_row_col_index(struct newspaper_manager *newspaper_man, int fd[2]){
 
     if (newspaper_man->col_index == newspaper_man->num_columns -1){
         int row_indx =  newspaper_man->row_index;
-        int size = strlen(newspaper_man->newspaper_page[row_indx]);
-
+        int size = strlen_while(newspaper_man->newspaper_page[row_indx], '\0');
         if (write(fd[1], &size, sizeof(int)) == -1){
-            printf("There was an error writing the data in the pipe\n");
-            exit(EXIT_FAILURE);
+            printf("There was a problem writing the data in the pipe\n");
+            exit(1);
         }
         if (write(fd[1], newspaper_man->newspaper_page[row_indx], size * sizeof(char)) == -1){
-            printf("There was an error writing the data in the pipe\n");
-            exit(EXIT_FAILURE);
+            printf("There was a problem writing the data in the pipe\n");
+            exit(1);
         }
         memset_string_to_char(newspaper_man->newspaper_page[row_indx], '\0', strlen(newspaper_man->newspaper_page[row_indx]) * sizeof(char));
     }
@@ -121,18 +124,16 @@ void update_row_col_index(struct newspaper_manager *newspaper_man, int fd[2]){
     if (newspaper_man->row_index == newspaper_man->num_rows -1){
         newspaper_man->row_index = 0;
         newspaper_man->col_index = (newspaper_man->col_index + 1) % newspaper_man->num_columns;
-
         if (newspaper_man->col_index == 0){
             int size = 7;
             char next_p[7] = "\n%%%\n";
-            
             if (write(fd[1], &size, sizeof(int)) == -1){
                 printf("There was a problem writing the data in the pipe\n");
-                exit(EXIT_FAILURE);
+                exit(1);
             }
             if (write(fd[1], next_p, size * sizeof(char)) == -1){
                 printf("There was a problem writing the data in the pipe\n");
-                exit(EXIT_FAILURE);
+                exit(1);
             }
         }
 

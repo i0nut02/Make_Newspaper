@@ -9,32 +9,32 @@
 /**
  * 
  * @param s
- * @return intero che rappresenta la lunghezza in caratteri reali anziché utf-8
+ * @return int wich rapresent the number of character in real word
  */
 int real_len(char *s);
 
 
 /**
- * @brief funziona come memset ma aggiunge come ultimo carattere '\0'
+ * @brief act like memset chit ch but assign '\0' as last char in dest
  * 
- * @param dest  
- * @param ch carattere da inserire in dest
- * @param size numero di caratteri da rimpiazzare con ch in dest (lunghezza dest -1)
+ * @param dest 
+ * @param ch char to place in dest
+ * @param size size of dest / number of character -1 to replace with ch in dest
  */
 void memset_string_to_char(char *dest, char ch, int size);
 
 
 /**
- * @brief libera e memsetta a '\0' le stringhe della lista, e la lista stessa
+ * @brief free and memset the strings in the list and free itself
  * 
- * @param list lista di stringhe
- * @param size dimensione della lista
+ * @param list list of strings
+ * @param size size of list
  */
 void free_list(char **list, int size);
 
 
 /**
- * @brief controlla se list è NULL, se si chiude il programma con errore
+ * @brief check if list is NULL, if true than print the error type and make exit call
  * 
  * @param list 
  */
@@ -42,50 +42,60 @@ void check_list_allocation(char **list);
 
 
 /**
- * @brief controlla se str è NULL, se si chiude il programma con errore
+ * @brief check if string is NULL, if true than print the error type and make exit call
  * 
- * @param str 
+ * @param str allocated with malloc/alloc
  */
 void check_string_allocation(char *str);
 
 
 /**
- * @brief controlla se str è composta da numeri, se si controlla se è maggiore di 0
+ * @brief check if the string is composed of integer numbers and if it is, check  if it's greater than 0
  * 
  * @param str 
- * @return 1 se str è un numero maggiore di 0, altrimenti 0
+ * @return 1 if str is composed of integer numbers and it's grater than zero otherwise 0
  */
 int check_number_grater_zero(char *str);
 
 
 /**
- * @brief copia in dest i caratteri di src fino a quando non incontra il break_char in src
+ * @brief copy in dest the src content while we don't encounted the break_char
  * 
- * @param dest scrittura dei caratteri di src
- * @param src lettura dei caratteri
+ * @param dest save the characters from src
+ * @param src read the single characters
  * @param break_char 
  */
 void strcpy_while(char *dest, char *src, char break_char);
 
 
 /**
- * @brief chiude la lettura di fd e gestisce gli errori
+ * @brief 
  * 
- * @param fd file descriptors 
+ * @param src 
+ * @param break_char 
+ * @return len of the src string while we find the break_char
+ */
+int strlen_while(char *src, char break_char);
+
+
+/**
+ * @brief close the fd[0] and manage the errors
+ * 
+ * @param fd file descriptors of a pipe
  */
 void close_read_pipe(int fd[2]);
 
 
 /**
- * @brief chiude la scrittura di fd e gestisce gli errori
+ * @brief close the fd[1] and manage the errors
  * 
- * @param fd file descriptors
+ * @param fd file descriptors of a pipe
  */
 void close_write_pipe(int fd[2]);
 
 
 /**
- * @brief contralla il valore del pid e gestisce gli errori
+ * @brief check if pid < 0 than call exit(1) 
  * 
  * @param pid process
  */
@@ -93,11 +103,11 @@ void check_fork(int pid);
 
 
 /**
- * @brief usccide i tre processi e gestisce gli errori
+ * @brief kill the 3 process and manage the errors
  * 
- * @param pid1 processo
- * @param pid2 processo
- * @param pid3 processo
+ * @param pid1 process
+ * @param pid2 process
+ * @param pid3 process
  */
 void kill_processes(int pid1, int pid2, int pid3);
 #endif

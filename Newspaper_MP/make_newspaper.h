@@ -12,23 +12,24 @@
 
 
 /**
- * @brief alloca e giustifica i paragrafi ottenuti da fd_1 nel giornale, inoltre
- *          inivia su fd_2 le righe del giornale da scrivere 
+ * @brief alloc and manage the words from fd_1 to newspaper page of newspaper_man, and send
+ *          in fd_2 the rows of newspaper page
+ *          
  * 
- * @param newspaper_man struttura contenente il formato del giornale
- * @param fd_1 file descriptor solo lettura
- * @param fd_2 file ddescriptor solo scrittura
+ * @param newspaper_man 
+ * @param fd_1 file descriptor only reading
+ * @param fd_2 file ddescriptor only writing
  */
 void alloc_paragraph(struct newspaper_manager *newspaper_man, int fd_1[2], int fd_2[2]);
 
 
 /**
- * @brief apre file_name e si salva le parole di ogni paragrafo per poi
- *          inviarle tramite fd
- *
- * @param file_name nome del file da leggere
- * @param max_word_len massima lunghezza di caratteri "reali" da poter inserire in una riga della colonna
- * @param fd file descriptore solo scrittura
+ * @brief open and read file_name and write the content as a list of 
+ *          row in fd
+ * 
+ * @param file_name name of a file to read 
+ * @param read_file file from where we need to read from
+ * @param fd file descriptore writing only
  */
 void read_paragraphs_file(char file_name[], int max_word_len, int fd[2]);
 

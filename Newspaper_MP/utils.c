@@ -14,19 +14,18 @@ int real_len(char *s){
         len += 1;
         char ch = s[index];
 
-
-        if ('\xc0' <= ch & ch <= '\xcf'){
-            index += 2;
-        }
-
-        else if ('\xe0' <= ch & ch <= '\xef'){
+        // real word chars composed of 3 chars
+        if ('\xe0' <= ch & ch <= '\xef'){
             index += 3;
         }
-
+        // real word chars composed of 2 chars
+        else if ('\xc0' <= ch & ch <= '\xcf'){
+            index += 2;
+        }
+        // chars composed of 4 bytes, like emojis
         else if ('\xf0' <= ch & ch <= '\xff'){
             index += 4;
         }
-
         else {
             index += 1;
         } 
@@ -37,7 +36,7 @@ int real_len(char *s){
 
 void memset_string_to_char(char *dest, char ch, int size){
     memset(dest, ch, sizeof(char) * size);
-    /* aggiungiamo il null terminator */
+    // add NULL terminator
     dest[size-1] = '\0';
 }
 
@@ -53,7 +52,7 @@ void free_list(char **list, int size){
 
 void check_list_allocation(char **list){
     if (list == NULL){
-        printf("There was an error with the allocation of a list in the heap\n");
+        printf("There was a problem with the allocation of a list in the heap\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -61,7 +60,7 @@ void check_list_allocation(char **list){
 
 void check_string_allocation(char *str){
     if (str == NULL){
-        printf("There was an error with the allocation of a string in the heap\n");
+        printf("There was a problem with the allocation of a string in the heap\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -93,6 +92,13 @@ void strcpy_while(char *dest, char *src, char break_char){
     }
 }
 
+int strlen_while(char *src, char break_char){
+    int i = 0;
+    while (*(src +i) != break_char){
+        i++;
+    }
+    return i +1;
+}
 
 void close_read_pipe(int fd[2]){
     if (close(fd[0]) == -1){
@@ -101,7 +107,6 @@ void close_read_pipe(int fd[2]){
     } 
 }
 
-
 void close_write_pipe(int fd[2]){
     if (close(fd[1]) == -1){
         printf("An error occurred closing the write pipe\n");
@@ -109,10 +114,9 @@ void close_write_pipe(int fd[2]){
     } 
 }
 
-
 void check_fork(int pid){
     if (pid < 0){
-        printf("An error accured during fork function\n");
+        printf("An erroe accured during fork function\n");
         exit(EXIT_FAILURE);
     }
 }

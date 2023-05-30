@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+// return -1 if we finish to read the file
+// hendling of error allocation
 /**
- * @brief legge le parole che trova nel file pointer e le salva in list, fino a quando
- *          non incontra un '\n' che rappresenta la fine di un paragrafo, e si salva in 
- *          size il numero di parole trovate, se una parola contiene più caratteri di max_lenght_str
- *          viene ritornato un errore
+ * @brief read from file_pointer while we encounter a "\n", save the words founded
+ *          in list and increment size every word founded, raise an error if exist a
+ *          word with lenght > max_lenght_str
  * 
- * @param file_pointer input file da cui leggere le parole
- * @param list un indirizzo di memoria dove è salvata una lista di strinnghe (non allocata)
- * @param max_lenght_str lunghezza massima di una stringa (non utf-8)
- * @param size un indirizzo di memoria dove si può salvare un intero
- * @return 0 se ha trovato come ultimo carattere EOF altrimenti -1
+ * @param file_pointer in read mode
+ * @param list a memory address of a double-pointed char 
+ * @param max_lenght_str max real len of a word
+ * @param size a memory address where will be saved the number of words founded
+ * @return 0 if found EOF like last char otherwise -1
  */
 int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, int *size);
 
