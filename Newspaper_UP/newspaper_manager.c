@@ -4,7 +4,7 @@
 
 #include "utils.h"
 
-extern int errno;
+int errno;
 
 
 struct newspaper_manager{

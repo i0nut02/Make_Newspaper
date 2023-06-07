@@ -4,8 +4,6 @@
 
 #include "utils.h"
 
-extern int errno;
-
 int get_paragraph_words(FILE *file_pointer, char ***list, int max_lenght_str, int *size){
     int indx_word = 0;
     int word_len = 0;
