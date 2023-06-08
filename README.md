@@ -3,7 +3,10 @@ Make-Newspaper è un programma che permette all’utente di trasformare un file 
 
 ## Utilizzo
 Dopo il download dei file del programma, l'utente potrà posizionarsi nella cartella di una delle due versioni del programma (uni-processo e multi-processo), dopo di che potrà creare l'eseguibile "makeNewspaper" digitando "make" all'interno del terminale, infine l'utente potrà eseguire il programma e visualizzare il formato dell'input atteso digitando "./makeNewpaper --help".
+
 esempio:
+
+<img width="596" alt="Schermata 2023-06-08 alle 14 57 25" src="https://github.com/i0nut02/Make_Newspaper/assets/99051485/febfc967-45d7-4829-9b3a-96172442f913">
 
 
 ## Archittetura del programma 
