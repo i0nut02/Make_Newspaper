@@ -2,7 +2,7 @@
 Make-Newspaper è un programma che permette all’utente di trasformare un file di testo in un giornale, il tutto potendo personalizzare a piacimento il formato delle pagine e delle colonne del giornale.
 
 ## Utilizzo
-Dopo il download dei file del programma, l'utente potrà posizionarsi nella cartella di una delle due versioni del programma (uni-processo e multi-processo), dopo di che potrà creare l'eseguibile "makeNewspaper" digitando "make" all'interno del terminale, infine l'utente potrà eseguire il programma e visualizzare il formato dell'input atteso digitando "./makeNewpaper --help".
+Dopo il download dei file del programma, l'utente potrà posizionarsi nella cartella di una delle due versioni del programma (uni-processo e multi-processo), dopo di che potrà creare l'eseguibile ```makeNewspaper``` digitando ```make``` all'interno del terminale, infine l'utente potrà eseguire il programma e visualizzare il formato dell'input atteso digitando ```./makeNewpaper --help```.
 
 esempio:
 
