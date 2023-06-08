@@ -1,5 +1,5 @@
 ## Make_Newspaper
-Make-Newspaper è un programma che permette all’utente di trasformare un file di testo in un giornale, il tutto potendo personalizzare a piacimento il formato delle pagine e delle colonne del giornale.
+Make_Newspaper è un programma che permette all’utente di trasformare un file di testo in un giornale, il tutto potendo personalizzare a piacimento il formato delle pagine e delle colonne del giornale.
 
 ## Utilizzo
 Dopo il download dei file del programma, l'utente potrà posizionarsi nella cartella di una delle due versioni del programma (uni-processo e multi-processo), dopo di che potrà creare l'eseguibile ```makeNewspaper``` digitando ```make``` all'interno del terminale, infine l'utente potrà eseguire il programma e visualizzare il formato dell'input atteso digitando ```./makeNewpaper --help```.
@@ -13,9 +13,13 @@ esempio:
 Il programma è diviso in tre processi principali:
 ```mermaid
 graph LR
-A[Lettura delle parole dei singoli paragrafi] --> B[Allocazione delle parole in una pagina di giornale dinamica]
-B --> D[Scrittura righe nel giornale]
+A[Lettura delle parole dei singoli paragrafi] --> B[Allocazione del paragrafo in una pagina di giornale dinamica]
+B --> D[Scrittura righe complete del giornale dinamico nel file di output]
 ```
+ - Lettura e salvataggio delle parole dei singoli paragrafi in una lista che verrà utilizzata dal secondo processo
+ - Giustificazione e allocazione delle parole prese dal primo processo all'interno di una lista di stringhe che rappresenta una pagina di giornale, quindi ogni volta che scriviamo l'ultima riga dell'ultima colonna, passiamo tutta la riga al terzo processo
+ - scrive le righe nel file di output
+ 
 ###  File :
 
  - #### main.c
